@@ -1,6 +1,6 @@
-# Integração da API SINTEGRA em Python – Consulta de Inscrição Estadual em tempo real
+# Integração da API SINTEGRA em PHP – Consulta de Inscrição Estadual em tempo real
 
-Exemplo de integração em **Python** com a API SINTEGRA da **ArquivoNFe**, para consulta de dados cadastrais por UF.
+Exemplo de integração em **PHP** com a API SINTEGRA da **ArquivoNFe**, para consulta de dados cadastrais por UF.
 
 A API permite realizar consultas utilizando **CNPJ, CPF ou Inscrição Estadual (IE)**, conforme a disponibilidade da consulta para cada UF.
 
@@ -14,6 +14,8 @@ A API permite realizar consultas utilizando **CNPJ, CPF ou Inscrição Estadual 
 * Consulta CNPJ
 * Consulta CPF
 * Consulta Inscrição Estadual por API
+* API REST PHP
+* Integração PHP com API
 
 ## Benefícios
 
@@ -21,7 +23,7 @@ A API permite realizar consultas utilizando **CNPJ, CPF ou Inscrição Estadual 
 ✔ Dados cadastrais retornados pela API<br>
 ✔ Integração simples via API REST<br>
 ✔ Processamento assíncrono utilizando `request_id`<br>
-✔ Exemplo prático de integração em Python
+✔ Exemplo prático de integração em PHP<br>
 
 ## Casos de uso
 
@@ -29,7 +31,7 @@ A API permite realizar consultas utilizando **CNPJ, CPF ou Inscrição Estadual 
 ✔ Conferência cadastral automática<br>
 ✔ Verificação de informações de empresas e contribuintes<br>
 ✔ Integração com sistemas ERP e aplicações próprias<br>
-✔ Processos de KYC (Know Your Customer)
+✔ Processos de KYC (Know Your Customer)<br>
 
 ## Diferenciais
 
@@ -37,16 +39,16 @@ A API permite realizar consultas utilizando **CNPJ, CPF ou Inscrição Estadual 
 ✔ Comunicação segura por HTTPS.<br>
 ✔ Infraestrutura hospedada na Oracle Cloud no Brasil.<br>
 ✔ Painel web para configurações, consultas manuais e acompanhamento das integrações via API.<br>
-✔ API REST com suporte a consultas por CNPJ, CPF ou Inscrição Estadual.
+✔ API REST com suporte a consultas por CNPJ, CPF ou Inscrição Estadual.<br>
 
 ---
 
 ## 🚀 Requisitos
 
 * Windows ou Linux
-* Python 3.x
+* PHP 8.5 ou superior
+* Extensão cURL habilitada
 * Git (opcional, caso escolha clonar o projeto)
-* Biblioteca `requests`
 
 ---
 
@@ -71,68 +73,116 @@ Após o login no portal:
 
 > ⚠️ **Nunca publique seu token de acesso no GitHub.**
 
-No arquivo `consulta_sintegra.py`, informe seu token apenas localmente:
+No arquivo `consulta_sintegra.php`, informe seu token apenas localmente:
 
-```python
-TOKEN = 'SEU_TOKEN_AQUI'
+```php
+$TOKEN = "SEU_TOKEN_AQUI";
 ```
 
 Antes de publicar o código no GitHub, certifique-se de que o token não esteja preenchido.
 
 ---
 
-### 3️⃣ Instalação do Python
+### 3️⃣ Instalação do PHP
 
-O exemplo utiliza **Python 3**.
+O exemplo utiliza **PHP 8.5 ou superior**, com a extensão cURL habilitada.
 
 #### Windows
 
-Baixe o Python pelo site oficial:
+Baixe o PHP pelo site oficial:
 
-https://www.python.org/downloads/windows/
+https://windows.php.net/download/
 
-Durante a instalação, marque a opção:
+Selecione a versão Windows x64 e baixe o arquivo ZIP.
 
-**Add python.exe to PATH**
+Extraia o conteúdo em uma pasta, por exemplo:
 
-Depois de concluir a instalação, abra o **Prompt de Comando (CMD)** e execute:
+```text
+C:\php
+```
+
+Configure a variável de ambiente `PATH` do Windows para incluir a pasta do PHP:
+
+```text
+C:\php
+```
+
+Abra um novo **Prompt de Comando (CMD)** e verifique a instalação:
 
 ```bash
-python --version
+php -v
 ```
 
 O comando deverá apresentar a versão instalada, por exemplo:
 
 ```text
-Python 3.13.x
+PHP 8.5.x (cli)
+```
+
+Verifique se a extensão cURL está habilitada:
+
+```bash
+php -m | findstr /I curl
+```
+
+O resultado esperado é:
+
+```text
+curl
 ```
 
 #### Linux
 
-Verifique se o Python 3 está instalado:
+Verifique se o PHP está instalado:
 
 ```bash
-python3 --version
+php -v
 ```
 
-Caso não esteja instalado, utilize o gerenciador de pacotes da sua distribuição.
-
-Por exemplo, no Ubuntu/Debian:
+Caso não esteja instalado, no Ubuntu/Debian utilize:
 
 ```bash
 sudo apt update
-sudo apt install python3 python3-pip python3-venv
+sudo apt install php-cli php-curl
 ```
 
 Depois confirme:
 
 ```bash
-python3 --version
+php -v
+php -m | grep curl
 ```
 
 ---
 
-### 4️⃣ Baixe o projeto
+### 4️⃣ Configuração do certificado SSL
+
+Para realizar as requisições HTTPS com validação de certificados, o PHP precisa localizar os certificados CA confiáveis.
+
+No Windows, caso seja apresentado erro de certificado SSL, baixe o arquivo `cacert.pem`:
+
+https://curl.se/ca/cacert.pem
+
+Salve o arquivo, por exemplo, em:
+
+```text
+C:\php\extras\ssl\cacert.pem
+```
+
+Abra o arquivo `php.ini` e configure:
+
+```ini
+curl.cainfo = "C:\php\extras\ssl\cacert.pem"
+openssl.cafile = "C:\php\extras\ssl\cacert.pem"
+```
+
+Salve as alterações e execute novamente o script.
+
+> A validação SSL deve permanecer habilitada para garantir a comunicação segura via HTTPS.
+
+---
+
+### 5️⃣ Baixe o projeto
 
 Você pode baixar o projeto diretamente pelo GitHub ou cloná-lo utilizando o Git.
 
@@ -149,93 +199,29 @@ Depois, extraia o arquivo em uma pasta do seu computador.
 Se o Git estiver instalado, execute:
 
 ```bash
-git clone https://github.com/mnogueira-tecnologia/api-sintegra-python.git
+git clone https://github.com/mnogueira-tecnologia/api-sintegra-php.git
 ```
 
 Depois acesse a pasta do projeto:
 
 ```bash
-cd api-sintegra-python
+cd api-sintegra-php
 ```
 
 ---
 
-### 5️⃣ Crie um ambiente virtual Python
+### 6️⃣ Configure seu Token
 
-É recomendado utilizar um ambiente virtual para manter as dependências do projeto isoladas.
+Abra o arquivo [`consulta_sintegra.php`](consulta_sintegra.php) e informe seu token de acesso:
 
-#### Windows
-
-Dentro da pasta do projeto, execute:
-
-```bash
-python -m venv .venv
-```
-
-Ative o ambiente virtual:
-
-```bash
-.venv\Scripts\activate
-```
-
-Após a ativação, o terminal deverá apresentar algo semelhante a:
-
-```text
-(.venv) C:\Users\seu_usuario\api-sintegra-python>
-```
-
-#### Linux
-
-Crie o ambiente virtual:
-
-```bash
-python3 -m venv .venv
-```
-
-Ative o ambiente:
-
-```bash
-source .venv/bin/activate
-```
-
----
-
-### 6️⃣ Instale as dependências
-
-Com o ambiente virtual ativado, instale a biblioteca `requests` e as demais dependências do projeto:
-
-#### Windows
-
-```bash
-pip install -r requirements.txt
-```
-
-#### Linux
-
-```bash
-pip3 install -r requirements.txt
-```
-
-Você também pode verificar se a biblioteca `requests` foi instalada corretamente:
-
-```bash
-pip show requests
-```
-
----
-
-### 7️⃣ Configure seu Token
-
-Abra o arquivo [`consulta_sintegra.py`](consulta_sintegra.py) e informe seu token de acesso:
-
-```python
-TOKEN = 'SEU_TOKEN_AQUI'
+```php
+$TOKEN = "SEU_TOKEN_AQUI";
 ```
 
 Por exemplo:
 
-```python
-TOKEN = '123456789abcdef'
+```php
+$TOKEN = "123456789abcdef";
 ```
 
 > ⚠️ **O token acima é apenas um exemplo. Nunca utilize ou publique tokens reais no GitHub.**
@@ -244,20 +230,20 @@ Antes de executar o projeto, certifique-se de que o token esteja configurado cor
 
 ---
 
-### 8️⃣ Execute o exemplo
+### 7️⃣ Execute o exemplo
 
-Com o ambiente virtual ativado e o token configurado, execute o script.
+Com o PHP instalado, a extensão cURL habilitada e o token configurado, abra o terminal na pasta do projeto e execute:
 
 #### Windows
 
 ```bash
-python consulta_sintegra.py
+php consulta_sintegra.php
 ```
 
 #### Linux
 
 ```bash
-python3 consulta_sintegra.py
+php consulta_sintegra.php
 ```
 
 O script realizará as consultas configuradas no exemplo e exibirá os resultados retornados pela API no terminal.
@@ -273,16 +259,42 @@ O exemplo demonstra:
 
 O código-fonte completo está disponível em:
 
-[`consulta_sintegra.py`](consulta_sintegra.py)
+[`consulta_sintegra.php`](consulta_sintegra.php)
+
+---
+
+## 🔄 Fluxo de consulta assíncrona
+
+A API utiliza processamento assíncrono baseado em `request_id`. **As consultas normalmente apresentam retornos muito rápidos, podendo ocorrer em milissegundos ou segundos**, dependendo da consulta e dos sistemas envolvidos.
+
+**Fluxo:**
+
+1. **Sem `request_id`** → inicia a consulta e retorna o `request_id`.
+2. **Com `request_id`** → retorna o resultado da consulta.
+
+Essa arquitetura evita manter a sessão aguardando o processamento, que pode depender de sistemas externos, como o SINTEGRA.
+
+### 📦 Consultas em lote
+
+Para consultar várias empresas:
+
+1. Enviar todas as requisições e armazenar os `request_id` retornados.
+2. Percorrer novamente o lote e consultar os resultados.
+
+Enquanto as demais requisições são enviadas, as primeiras provavelmente já terão sido processadas. Assim, quando a aplicação consulta os respectivos `request_id`, boa parte dos resultados, senão todos, já poderá estar disponível.
+
+Esse modelo permite **sobrepor o envio das requisições ao processamento das consultas**, proporcionando melhor aproveitamento dos recursos e maior eficiência no processamento de lotes.
 
 ---
 
 ## 📄 Exemplo de retorno da API
 
-O exemplo abaixo apresenta um retorno da API após a conclusão da consulta:
+O exemplo abaixo apresenta as etapas de execução e os retornos da API:
 
 ![Retorno JSON](teste_etapa1.png)
+
 ![Retorno JSON](teste_etapa2.png)
+
 ![Retorno JSON](teste_etapa3.png)
 
 ---
